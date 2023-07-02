@@ -10,26 +10,31 @@ exports.signup = (req, res) => {
   const user = new User({
     username: req.body.username,
     email: req.body.email,
+    role: req.body.role,
+    //roles: req.body.roles,
+    mobile: req.body.mobile,
     password: bcrypt.hashSync(req.body.password, 8),
   });
 
   user.save((err, user) => {
     if (err) {
+      console.log("err1", err)
       res.status(500).send({ message: err });
       return;
     }
 
-    if (req.body.roles) {
+    if (req.body.role) {
       Role.find(
         {
-          name: { $in: req.body.roles },
+          name: { $in: req.body.role },
         },
         (err, roles) => {
           if (err) {
+           // console.log("err", err)
             res.status(500).send({ message: err });
             return;
           }
-
+          //console.log("r", roles)
           user.roles = roles.map((role) => role._id);
           user.save((err) => {
             if (err) {
